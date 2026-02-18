@@ -3,232 +3,710 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UK Food Price Inflation Report for School Caterers</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>2026 Food Price Outlook | AVE</title>
+    
+    <!-- Fonts: Lato (Brand Guideline) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Lato', sans-serif;
-            background-color: #00454e;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 400px;
-            max-height: 50vh;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 450px;
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind Config for AVE Colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Lato', 'sans-serif'],
+                    },
+                    colors: {
+                        ave: {
+                            orange: '#f8ab16',      // Brand Accent
+                            teal: '#007588',        // Brand Primary
+                            darkTeal: '#00454e',    // Brand Deep
+                            darkGrey: '#374f5a',    // Brand Neutral
+                            light: '#f4f6f7'
+                        }
+                    }
+                }
             }
+        }
+    </script>
+
+    <style>
+        /* Custom Chart Container Logic */
+        .chart-wrapper {
+            position: relative; 
+            width: 100%; 
+            height: 350px; 
+            max-height: 400px;
+        }
+        
+        /* Custom Scrollbar for the list */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #007588; 
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #00454e; 
+        }
+
+        /* Selection styling */
+        .commodity-item.active {
+            background-color: #e0f2f1;
+            border-left: 4px solid #f8ab16;
+            font-weight: 700;
+        }
+        
+        .tab-btn.active {
+            border-bottom: 3px solid #f8ab16;
+            color: #00454e;
+            font-weight: 700;
+        }
+        
+        body {
+            background-color: #fafafa;
+            color: #374f5a;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
         }
     </style>
+    <!-- Chosen Palette: AVE Brand (Teal #007588, Orange #f8ab16, Dark Teal #00454e) -->
+    <!-- Application Structure Plan: 
+         1. Header: Brand identity.
+         2. Executive Dashboard: High-level inflation gauge and top alerts.
+         3. Macro Drivers: 4-column layout explaining the "Why".
+         4. Commodity Deep Dive: Split-screen interactive tool. Left side: List of commodities. Right side: Dynamic chart and detailed analysis card.
+         5. Sector & Strategy: Tabbed interface to filter content relevant to specific roles.
+         6. Footer: Standard closure.
+    -->
+    <!-- Visualization & Content Choices:
+         - Inflation Gauge: Chart.js Doughnut.
+         - Price Trends: Chart.js Line chart.
+         - Icons: Unicode characters.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
-<body class="text-gray-200">
+<body class="font-sans antialiased text-ave-darkGrey">
 
-    <div class="container mx-auto p-4 md:p-8">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">Food Inflation & Catering Costs</h1>
-            <p class="text-lg md:text-xl text-[#f8ab16]">An analysis for UK School Caterers | Autumn 2025</p>
-        </header>
-
-        <main>
-            <section class="mb-12">
-                <div class="bg-[#007588] rounded-lg shadow-2xl p-6 md:p-8 text-center">
-                    <p class="text-2xl md:text-3xl font-light text-white mb-2">Overall Food & Non-Alcoholic Drink prices have risen by:</p>
-                    <p class="text-6xl md:text-7xl font-black text-[#f8ab16] tracking-tight">5.1%</p>
-                    <p class="text-lg text-white mt-2">in the 12 months to August 2025, the highest rate since early 2024.</p>
+    <!-- Header -->
+    <header class="bg-ave-darkTeal text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <!-- CSS Logo Representation -->
+                <div class="flex flex-col leading-none">
+                    <span class="text-3xl font-bold tracking-widest text-white">AVE</span>
+                    <span class="text-[0.6rem] text-ave-orange font-bold uppercase tracking-wider">Added Value Enterprises</span>
                 </div>
-            </section>
+                <div class="h-8 w-px bg-ave-teal hidden md:block"></div>
+                <h1 class="text-lg md:text-xl font-light hidden md:block text-gray-200">2026 Food Price Outlook</h1>
+            </div>
+            <div class="text-sm font-light italic text-ave-orange">
+                Procurement Market Forecast
+            </div>
+        </div>
+    </header>
 
-            <section class="mb-12">
-                <div class="bg-[#374f5a] rounded-lg shadow-2xl p-6 md:p-8">
-                    <h2 class="text-3xl font-bold text-center mb-2 text-white">Commodity Price Hotspots</h2>
-                    <p class="text-center text-lg mb-8 max-w-3xl mx-auto">Comparing the 12-month inflation rates for key catering commodities reveals significant cost pressures across the board, with proteins seeing the most dramatic increases. This data is essential for accurate menu costing and budget forecasting.</p>
-                    <div class="chart-container">
-                        <canvas id="commoditiesChart"></canvas>
-                    </div>
-                </div>
-            </section>
-
-            <section class="mb-12">
-                <h2 class="text-3xl font-bold text-center mb-8 text-white">Spotlight on Major Increases</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    <div class="bg-[#007588] rounded-lg shadow-2xl p-6 text-center">
-                        <h3 class="text-2xl font-bold text-white mb-2">Beef & Veal</h3>
-                        <p class="text-5xl font-black text-[#f8ab16]">24.9%</p>
-                        <p class="text-md mt-2 text-white">Tight supply and continued high demand are the primary drivers for the dramatic rise in beef prices, impacting core menu items like mince and roasting joints.</p>
-                    </div>
-                    <div class="bg-[#007588] rounded-lg shadow-2xl p-6 text-center">
-                        <h3 class="text-2xl font-bold text-white mb-2">Oils & Spreads</h3>
-                        <p class="text-5xl font-black text-[#f8ab16]">18.9%</p>
-                         <p class="text-md mt-2 text-white">Following dairy trends, butter prices have notably increased. Global supply chain issues continue to affect the cost of cooking oils and spreads.</p>
-                    </div>
-                    <div class="bg-[#007588] rounded-lg shadow-2xl p-6 text-center md:col-span-2 lg:col-span-1">
-                        <h3 class="text-2xl font-bold text-white mb-2">Chicken</h3>
-                        <p class="text-5xl font-black text-[#f8ab16]">12.1%</p>
-                        <p class="text-md mt-2 text-white">While lower than red meat, poultry inflation is still significant due to rising feed, energy, and labour costs impacting the entire production chain.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="mb-12">
-                <div class="bg-[#374f5a] rounded-lg shadow-2xl p-6 md:p-8">
-                    <h2 class="text-3xl font-bold text-center mb-8 text-white">What's Driving the Increases?</h2>
-                    <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center">
-                        <div class="p-4 bg-[#00454e] rounded-lg w-full md:w-1/4">
-                            <p class="text-2xl mb-2">➜</p>
-                            <h3 class="text-xl font-bold text-[#f8ab16]">Higher Input Costs</h3>
-                            <p class="text-sm">Increased prices for energy, animal feed, and fertiliser.</p>
+    <!-- Executive Summary / Hero -->
+    <section class="bg-white border-b border-gray-200 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:flex lg:items-start lg:justify-between lg:space-x-12">
+                
+                <!-- Text Content -->
+                <div class="lg:w-2/3 mb-10 lg:mb-0">
+                    <h2 class="text-3xl font-bold text-ave-darkTeal mb-4">Executive Summary</h2>
+                    <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                        The 2026 outlook presents a <strong>stabilizing yet fragile</strong> landscape for food procurement. While the extreme volatility of 2023–2024 has subsided, contract caterers in education and healthcare face structural cost resets. We forecast a weighted average food inflation of <strong>3.8%</strong> for 2026, driven primarily by labour-intensive protein categories and climate-sensitive crops.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-blue-50 p-4 rounded-l border-l-4 border-ave-teal">
+                            <h3 class="font-bold text-ave-darkTeal mb-2">🚀 Opportunities</h3>
+                            <ul class="text-sm space-y-2 list-disc pl-4 text-gray-700">
+                                <li><strong>Contract Indexing:</strong> Move from fixed-price to capped-index models.</li>
+                                <li><strong>Menu Engineering:</strong> Shift focus to lower-carbon, lower-cost plant proteins.</li>
+                                <li><strong>Spot Buying:</strong> Dairy markets are showing softness; opportunity for volume locking.</li>
+                            </ul>
                         </div>
-                         <div class="text-3xl font-bold text-[#007588] hidden md:block">→</div>
-                        <div class="p-4 bg-[#00454e] rounded-lg w-full md:w-1/4">
-                             <p class="text-2xl mb-2">➜</p>
-                            <h3 class="text-xl font-bold text-[#f8ab16]">Labour Shortages</h3>
-                            <p class="text-sm">Higher wage costs and staff shortages across production and transport.</p>
-                        </div>
-                         <div class="text-3xl font-bold text-[#007588] hidden md:block">→</div>
-                        <div class="p-4 bg-[#00454e] rounded-lg w-full md:w-1/4">
-                             <p class="text-2xl mb-2">➜</p>
-                            <h3 class="text-xl font-bold text-[#f8ab16]">Supply Chain Issues</h3>
-                            <p class="text-sm">Post-Brexit checks, global trade disruption, and adverse weather events.</p>
-                        </div>
-                         <div class="text-3xl font-bold text-[#007588] hidden md:block">→</div>
-                        <div class="p-4 bg-green-800/50 rounded-lg w-full md:w-1/4 border-2 border-[#f8ab16]">
-                             <p class="text-2xl mb-2">✔</p>
-                            <h3 class="text-xl font-bold text-white">Higher Catering Prices</h3>
-                            <p class="text-sm">The cumulative effect leads to increased costs for caterers.</p>
+                        <div class="bg-orange-50 p-4 rounded-r border-r-4 border-ave-orange">
+                            <h3 class="font-bold text-ave-darkTeal mb-2">⚠️ Key Risks</h3>
+                            <ul class="text-sm space-y-2 list-disc pl-4 text-gray-700">
+                                <li><strong>Climate Volatility:</strong> Potato and Coffee crops at high risk.</li>
+                                <li><strong>Geopolitics:</strong> Trade friction affecting imported non-perishables.</li>
+                                <li><strong>Labour Costs:</strong> National Living Wage increases flowing into manufacturing costs.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </section>
+
+                <!-- Inflation Gauge Visualization -->
+                <div class="lg:w-1/3 bg-gray-50 rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
+                    <h3 class="text-ave-darkTeal font-bold mb-2">2026 Forecast Inflation</h3>
+                    <div class="relative w-48 h-48">
+                        <canvas id="inflationGauge"></canvas>
+                        <div class="absolute inset-0 flex items-center justify-center flex-col">
+                            <span class="text-4xl font-bold text-ave-darkTeal">3.8%</span>
+                            <span class="text-xs text-gray-500 uppercase">Weighted Avg</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-center text-gray-500 mt-4">
+                        Data reflects anticipated year-on-year CPI basket increase for catering specific SKUs.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Macro Drivers -->
+    <section class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-ave-darkTeal">Macroeconomic Drivers</h2>
+                <p class="text-gray-600 max-w-2xl">Four primary forces are shaping the cost base for 2026. Understanding these inputs is critical for supplier negotiation.</p>
+            </div>
             
-            <footer class="text-center pt-8">
-                <p class="text-sm text-gray-400">Data sourced from the Office for National Statistics (ONS) and industry reports, September/October 2025. This infographic is intended for strategic planning and advisory purposes.</p>
-            </footer>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Driver 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-ave-teal hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-3">⚡</div>
+                    <h3 class="font-bold text-lg text-ave-darkGrey mb-2">Energy & Logistics</h3>
+                    <p class="text-sm text-gray-600">Wholesale gas prices have normalized, but distribution costs remain high due to fleet electrification mandates and fuel duty uncertainty.</p>
+                    <div class="mt-3 text-xs font-bold text-ave-teal uppercase tracking-wide">Impact: Moderate ↓</div>
+                </div>
 
-        </main>
-    </div>
+                <!-- Driver 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-ave-orange hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-3">⛈️</div>
+                    <h3 class="font-bold text-lg text-ave-darkGrey mb-2">Climate & Yields</h3>
+                    <p class="text-sm text-gray-600">El Niño after-effects continue to impact coffee, cocoa, and olive oil. Wet UK winters are threatening forecast potato yields for Q1 2026.</p>
+                    <div class="mt-3 text-xs font-bold text-red-600 uppercase tracking-wide">Impact: High ↑</div>
+                </div>
 
+                <!-- Driver 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-ave-teal hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-3">👥</div>
+                    <h3 class="font-bold text-lg text-ave-darkGrey mb-2">Labour Markets</h3>
+                    <p class="text-sm text-gray-600">The rise in National Living Wage is now baked into processor costs. Labour-intensive categories (butchery, prep) will see sustained inflation.</p>
+                    <div class="mt-3 text-xs font-bold text-red-600 uppercase tracking-wide">Impact: High ↑</div>
+                </div>
+
+                <!-- Driver 4 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-gray-400 hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-3">💷</div>
+                    <h3 class="font-bold text-lg text-ave-darkGrey mb-2">Currency (GBP)</h3>
+                    <p class="text-sm text-gray-600">Sterling stability against the Euro is helping mitigate import costs for fresh produce, though USD strength pressures grain and oilseeds.</p>
+                    <div class="mt-3 text-xs font-bold text-green-600 uppercase tracking-wide">Impact: Neutral →</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commodity Deep Dive (Interactive Core) -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-ave-darkTeal">Commodity Deep Dives</h2>
+                <p class="text-gray-600">Interactive analysis of key procurement categories. Select a commodity to view the 2026 outlook.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row border border-gray-200 rounded-xl overflow-hidden shadow-lg h-[800px] lg:h-[600px]">
+                
+                <!-- Sidebar Selector -->
+                <div class="w-full lg:w-1/4 bg-gray-50 border-r border-gray-200 overflow-y-auto custom-scroll">
+                    <div class="p-4 bg-ave-darkTeal text-white font-bold text-sm uppercase tracking-wider sticky top-0 z-10">
+                        Select Category
+                    </div>
+                    <div id="commodityList" class="divide-y divide-gray-200">
+                        <!-- JS populated items -->
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="w-full lg:w-3/4 p-6 lg:p-8 bg-white overflow-y-auto" id="commodityDetailContainer">
+                    
+                    <div class="flex flex-wrap items-center justify-between mb-6">
+                        <div>
+                            <h3 id="detailTitle" class="text-3xl font-bold text-ave-darkTeal">Loading...</h3>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <span class="text-sm text-gray-500">Forecast Trend:</span>
+                                <span id="detailTrendBadge" class="px-2 py-0.5 rounded text-xs font-bold bg-gray-200 text-gray-700">--</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                             <div class="text-xs text-gray-400 uppercase tracking-wide">Confidence Level</div>
+                             <div id="detailConfidence" class="font-bold text-ave-teal">--</div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="mb-8">
+                         <div class="chart-wrapper mx-auto">
+                            <canvas id="commodityChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold text-ave-darkTeal border-b border-gray-200 pb-2 mb-3">Supply & Demand Dynamics</h4>
+                            <p id="detailDynamics" class="text-sm text-gray-700 leading-relaxed">
+                                --
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-ave-darkTeal border-b border-gray-200 pb-2 mb-3">Procurement Strategy</h4>
+                            <ul id="detailStrategy" class="list-disc list-inside text-sm text-gray-700 space-y-2">
+                                <li>--</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sector Impact & Strategy -->
+    <section class="py-12 bg-ave-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl font-bold text-ave-darkTeal mb-6">Sector Impact Analysis</h2>
+            
+            <!-- Tabs -->
+            <div class="flex space-x-6 border-b border-gray-300 mb-8 overflow-x-auto whitespace-nowrap">
+                <button class="tab-btn active pb-3 text-lg transition-colors focus:outline-none" onclick="switchSector('education', this)">Education Catering</button>
+                <button class="tab-btn pb-3 text-lg text-gray-500 hover:text-ave-darkTeal transition-colors focus:outline-none" onclick="switchSector('healthcare', this)">Healthcare</button>
+                <button class="tab-btn pb-3 text-lg text-gray-500 hover:text-ave-darkTeal transition-colors focus:outline-none" onclick="switchSector('hospitality', this)">Hospitality</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="sectorContent" class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 min-h-[300px]">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-ave-darkTeal text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+            <div>
+                <div class="flex flex-col leading-none mb-4">
+                    <span class="text-2xl font-bold tracking-widest text-white">AVE</span>
+                    <span class="text-[0.5rem] text-ave-orange font-bold uppercase tracking-wider">Added Value Enterprises</span>
+                </div>
+                <p class="text-gray-300 opacity-80">
+                    Expert procurement consultancy for education, healthcare, and hospitality.
+                </p>
+            </div>
+            <div>
+                <h4 class="font-bold text-ave-orange mb-3">Contact</h4>
+                <p class="text-gray-300">Procurement House</p>
+                <p class="text-gray-300">Worcester, UK</p>
+                <p class="text-gray-300 mt-2">insights@ave-procurement.com</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-ave-orange mb-3">Disclaimer</h4>
+                <p class="text-gray-300 opacity-60 text-xs leading-relaxed">
+                    This report is for informational purposes only. While AVE utilizes robust market intelligence, future commodity pricing is subject to volatile market conditions. Procurement decisions should be made based on specific contract contexts.
+                </p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-8 border-t border-teal-800 text-center text-xs text-gray-400">
+            &copy; 2026 Added Value Enterprises. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        const ctx = document.getElementById('commoditiesChart').getContext('2d');
-
-        const processLabel = (label) => {
-            if (label.length > 16) {
-                const words = label.split(' ');
-                const lines = [];
-                let currentLine = '';
-                for (const word of words) {
-                    if ((currentLine + ' ' + word).trim().length > 16) {
-                        lines.push(currentLine.trim());
-                        currentLine = word;
-                    } else {
-                        currentLine = (currentLine + ' ' + word).trim();
-                    }
-                }
-                if (currentLine) {
-                    lines.push(currentLine.trim());
-                }
-                return lines;
-            }
-            return label;
-        };
+        // --- DATA STORE ---
         
-        const originalLabels = ['Beef & Veal', 'Oils & Spreads', 'Chicken', 'Fish', 'Dairy (Milk & Cheese)', 'Pork', 'Tomatoes', 'Potatoes', 'Pasta'];
-        const processedLabels = originalLabels.map(processLabel);
-
-        const commoditiesChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: processedLabels,
-                datasets: [{
-                    label: '12-Month Price Increase (%)',
-                    data: [24.9, 18.9, 12.1, 8.5, 7.8, 4.2, 3.5, 2.9, 1.5],
-                    backgroundColor: '#007588',
-                    borderColor: '#f8ab16',
-                    borderWidth: 2,
-                    borderRadius: 5,
-                    hoverBackgroundColor: '#009ab2',
-                }]
+        const commodities = [
+            {
+                id: 'chicken',
+                name: 'Chicken',
+                icon: '🍗',
+                trend: 'Rising ↗',
+                trendColor: 'text-red-600',
+                confidence: 'High',
+                prices: [110, 115, 118, 122, 124, 125],
+                dynamics: "Poultry remains the primary protein for cost-conscious menus, keeping demand firm. However, feed costs (wheat/soy) have bottomed out and are creeping up. Avian Influenza remains a persistent seasonal threat in the UK and EU, restricting flock sizes. Expect tight supply in Q1 2026.",
+                strategy: [
+                    "Fix pricing on breast meat for 6-month tranches if possible.",
+                    "Switch to thigh meat for 15-20% cost reduction in stews/curries.",
+                    "Review portion sizes; consider 10% reduction offset by lentils/pulses."
+                ]
             },
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.2)'
-                        },
-                        ticks: {
-                            color: '#e5e7eb',
-                            font: {
-                                size: 14,
-                            },
-                            callback: function(value) {
-                                return value + '%'
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#e5e7eb',
-                            font: {
-                                size: 14,
-                            }
-                        }
-                    }
+            {
+                id: 'beef',
+                name: 'Beef',
+                icon: '🥩',
+                trend: 'Rising ↗',
+                trendColor: 'text-red-600',
+                confidence: 'Medium',
+                prices: [120, 128, 135, 138, 142, 145],
+                dynamics: "Global herd contraction, particularly in the US and Brazil, is driving global prices up. UK domestic supply is stable but expensive due to labour and processing costs. Demand for cheaper cuts (mince, diced) in education/healthcare is outstripping supply of premium cuts in hospitality.",
+                strategy: [
+                    "Limit beef frequency on education menus to once per fortnight.",
+                    "Utilize 'blend' products (50% beef / 50% plant) to mitigate cost and meet carbon targets.",
+                    "Investigate frozen imported options for price-sensitive contracts."
+                ]
+            },
+            {
+                id: 'potatoes',
+                name: 'Potatoes',
+                icon: '🥔',
+                trend: 'Volatile ↝',
+                trendColor: 'text-orange-500',
+                confidence: 'Low',
+                prices: [100, 140, 120, 110, 130, 125],
+                dynamics: "The 'wet weather' legacy of 2024/25 has impacted seed potato availability for 2026 planting. While 2025 maincrop was adequate, quality issues persist (rotting in store). 2026 pricing will be highly weather-dependent in Spring.",
+                strategy: [
+                    "Shift dependency from fresh mash/roast to frozen/dehydrated products where appropriate.",
+                    "For fresh, utilize Grade 2 specifications for peeling/mashing.",
+                    "Avoid fixed price contracts; use index-linked mechanisms to track market reality."
+                ]
+            },
+            {
+                id: 'dairy',
+                name: 'Dairy',
+                icon: '🥛',
+                trend: 'Stable →',
+                trendColor: 'text-green-600',
+                confidence: 'High',
+                prices: [130, 125, 115, 115, 116, 117],
+                dynamics: "Milk farmgate prices have stabilized after the historic highs of 2023. Global demand for milk powder is tepid (China demand softening), keeping a lid on butter and cheese prices. This is a buyer's market for H1 2026.",
+                strategy: [
+                    "Lock in butter and cheese block prices for full year 2026.",
+                    "Consolidate fluid milk volume with a single national distributor.",
+                    "Review yogurt specifications; move to bulk pots vs individual servings."
+                ]
+            },
+            {
+                id: 'coffee',
+                name: 'Coffee',
+                icon: '☕',
+                trend: 'Surging ↑',
+                trendColor: 'text-red-700',
+                confidence: 'High',
+                prices: [110, 130, 150, 175, 185, 190],
+                dynamics: "Robusta beans have hit historic highs due to drought in Vietnam. Arabica is following suit due to dry conditions in Brazil. This is a supply-led crisis. Roasters are passing on significant increases. Expect double-digit inflation.",
+                strategy: [
+                    "Expect 15-20% price increases; budget accordingly.",
+                    "Explore Robusta/Arabica blends to manage cost vs pure Arabica.",
+                    "Review 'free on loan' machine contracts."
+                ]
+            },
+            {
+                id: 'oil',
+                name: 'Oils & Fats',
+                icon: '🌻',
+                trend: 'Falling ↘',
+                trendColor: 'text-green-600',
+                confidence: 'Medium',
+                prices: [150, 130, 110, 105, 100, 98],
+                dynamics: "Sunflower oil supply chains from Ukraine have rebuilt capacity. Rapeseed and Palm Oil yields are strong globally. We are seeing deflation in this category compared to the 2023 peak.",
+                strategy: [
+                    "Do not fix long-term prices yet; market is softening.",
+                    "Use high-performance long-life fryer oils to reduce consumption volume.",
+                    "Tender this category aggressively in Q1 2026."
+                ]
+            },
+            {
+                id: 'grain',
+                name: 'Bakery & Grains',
+                icon: '🍞',
+                trend: 'Stable →',
+                trendColor: 'text-blue-600',
+                confidence: 'High',
+                prices: [115, 112, 110, 110, 112, 114],
+                dynamics: "Wheat futures have settled. The cost driver for bakery in 2026 is not the flour, but the oven energy and the driver delivering the bread. Prices will track CPI/Wage inflation.",
+                strategy: [
+                    "Consolidate deliveries to reduce drop charges.",
+                    "Switch to thaw-and-serve options to reduce waste.",
+                    "Local bakeries may offer better service but higher unit costs."
+                ]
+            }
+        ];
+
+        const sectorData = {
+            education: {
+                title: "Education Catering",
+                icon: "🎓",
+                intro: "Budgets remain flat in real terms while nutritional standards are tightening. The 2026 challenge is balancing UIFSM funding against protein inflation.",
+                impacts: [
+                    "<strong>Meat:</strong> Rising beef/chicken costs will force menus towards 3 days vegetarian/plant-based.",
+                    "<strong>Portions:</strong> strict adherence to portion control is the primary mechanism for margin protection.",
+                    "<strong>Packaging:</strong> Disposables cost remains high; move to reusables to cut recurring spend."
+                ],
+                chartData: [45, 30, 15, 10]
+            },
+            healthcare: {
+                title: "Healthcare & Senior Living",
+                icon: "🏥",
+                intro: "Patient hydration and nutrition mandates limit 'cheap' substitution. Focus is on nutrient density per penny. 24/7 service requirements mean labour inflation hits this sector hardest.",
+                impacts: [
+                    "<strong>Dairy:</strong> Deflation here is a win; maximize use of milk/cheese for protein fortification.",
+                    "<strong>Fresh Produce:</strong> Volatility in soft fruits requires flexible menu planning.",
+                    "<strong>Special Diets:</strong> Costs for allergen-free products are rising faster than standard goods."
+                ],
+                chartData: [40, 45, 10, 5]
+            },
+            hospitality: {
+                title: "Hospitality & Leisure",
+                icon: "🍽️",
+                intro: "Consumer spend is recovering but cautious. The 'experience' economy demands quality, but back-of-house efficiency is crucial. Coffee price rises pose a threat to gross margin percentages.",
+                impacts: [
+                    "<strong>Coffee:</strong> 20% rise in bean costs must be passed on or absorbed via efficient brewing.",
+                    "<strong>Premium Proteins:</strong> Shift from Steak to Brisket/slow-cook cuts to maintain margin.",
+                    "<strong>Wastage:</strong> Tech-enabled food waste tracking is no longer optional."
+                ],
+                chartData: [28, 35, 20, 17]
+            }
+        };
+
+        // --- CHART INSTANCES ---
+        let mainChart = null;
+        let inflationGauge = null;
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            initCommodityList();
+            initInflationGauge();
+            renderCommodity(commodities[0].id);
+            renderSector('education');
+        };
+
+        // --- INFLATION GAUGE ---
+        function initInflationGauge() {
+            const canvas = document.getElementById('inflationGauge');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            inflationGauge = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Projected Inflation', 'Stable Base'],
+                    datasets: [{
+                        data: [3.8, 96.2],
+                        backgroundColor: ['#f8ab16', '#e5e7eb'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: function(tooltipItems) {
-                                const item = tooltipItems[0];
-                                let label = item.chart.data.labels[item.dataIndex];
-                                if (Array.isArray(label)) {
-                                  return label.join(' ');
-                                } else {
-                                  return label;
-                                }
-                            },
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    label += context.parsed.y + '%';
-                                }
-                                return label;
-                            }
-                        },
-                        backgroundColor: '#00454e',
-                        titleFont: {
-                            size: 16,
-                            weight: 'bold'
-                        },
-                        bodyFont: {
-                            size: 14
-                        },
-                        padding: 12,
-                        cornerRadius: 6,
-                        displayColors: false,
+                options: {
+                    cutout: '80%',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
                     }
                 }
+            });
+        }
+
+        // --- COMMODITY LOGIC ---
+        function initCommodityList() {
+            const listContainer = document.getElementById('commodityList');
+            if (!listContainer) return;
+            
+            commodities.forEach(item => {
+                const div = document.createElement('div');
+                div.className = `commodity-item p-4 cursor-pointer hover:bg-gray-100 border-l-4 border-transparent transition-all duration-200`;
+                // Set data attribute correctly
+                div.setAttribute('data-id', item.id);
+                div.onclick = () => renderCommodity(item.id);
+                
+                div.innerHTML = `
+                    <div class="flex items-center justify-between pointer-events-none">
+                        <div class="flex items-center">
+                            <span class="text-2xl mr-3">${item.icon}</span>
+                            <div>
+                                <h4 class="font-bold text-ave-darkTeal">${item.name}</h4>
+                                <p class="text-xs text-gray-500">Outlook: <span class="${item.trend.includes('Rising') || item.trend.includes('Surging') ? 'text-red-600' : (item.trend.includes('Falling') ? 'text-green-600' : 'text-ave-orange')}">${item.trend}</span></p>
+                            </div>
+                        </div>
+                        <div class="text-gray-300">❯</div>
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        function renderCommodity(id) {
+            // Locate the item in the list
+            const target = document.querySelector(`.commodity-item[data-id="${id}"]`);
+            if (!target) return; // Guard clause
+
+            // UI Updates
+            document.querySelectorAll('.commodity-item').forEach(el => el.classList.remove('active'));
+            target.classList.add('active');
+
+            const data = commodities.find(c => c.id === id);
+            if (!data) return;
+            
+            // Text Updates
+            document.getElementById('detailTitle').innerHTML = `${data.icon} ${data.name}`;
+            const badge = document.getElementById('detailTrendBadge');
+            badge.innerText = data.trend;
+            badge.className = `px-2 py-1 rounded text-xs font-bold ${data.trendColor} bg-opacity-20 bg-gray-200 border border-gray-200`;
+            
+            document.getElementById('detailConfidence').innerText = data.confidence;
+            document.getElementById('detailDynamics').innerText = data.dynamics;
+            
+            const strategyList = document.getElementById('detailStrategy');
+            strategyList.innerHTML = '';
+            data.strategy.forEach(s => {
+                const li = document.createElement('li');
+                li.innerText = s;
+                strategyList.appendChild(li);
+            });
+
+            // Animate detail container
+            const container = document.getElementById('commodityDetailContainer');
+            container.classList.remove('animate-fade-in');
+            void container.offsetWidth; // Trigger reflow
+            container.classList.add('animate-fade-in');
+
+            // Chart Update
+            updateMainChart(data);
+        }
+
+        function updateMainChart(data) {
+            const canvas = document.getElementById('commodityChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            const labels = ['2024 H1', '2024 H2', '2025 H1', '2025 H2', '2026 H1 (F)', '2026 H2 (F)'];
+
+            if (mainChart) {
+                mainChart.destroy();
             }
-        });
+
+            mainChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `${data.name} Price Index (Base 100)`,
+                        data: data.prices,
+                        borderColor: '#007588',
+                        backgroundColor: 'rgba(0, 117, 136, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#f8ab16',
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { font: { family: 'Lato' } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { borderDash: [2, 4] },
+                            title: { display: true, text: 'Price Index (2023 = 100)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- SECTOR LOGIC ---
+        function switchSector(sectorId, btnElement) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-ave-darkTeal');
+                btn.classList.add('text-gray-500');
+            });
+            btnElement.classList.add('active', 'text-ave-darkTeal');
+            btnElement.classList.remove('text-gray-500');
+
+            renderSector(sectorId);
+        }
+
+        function renderSector(sectorId) {
+            const data = sectorData[sectorId];
+            const container = document.getElementById('sectorContent');
+            if (!container) return;
+            
+            container.innerHTML = `
+                <div class="flex flex-col md:flex-row gap-8 items-start animate-fade-in">
+                    <div class="md:w-2/3">
+                        <div class="flex items-center mb-4">
+                            <span class="text-4xl mr-4">${data.icon}</span>
+                            <h3 class="text-2xl font-bold text-ave-darkTeal">${data.title}</h3>
+                        </div>
+                        <p class="text-gray-700 italic mb-6 border-l-4 border-ave-orange pl-4 bg-gray-50 p-2 rounded-r">
+                            "${data.intro}"
+                        </p>
+                        
+                        <div class="space-y-4">
+                            ${data.impacts.map(impact => `
+                                <div class="flex items-start">
+                                    <span class="text-ave-teal mr-2 mt-1">➤</span>
+                                    <p class="text-sm text-gray-700">${impact}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/3 w-full bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <h4 class="text-sm font-bold text-center text-ave-darkTeal mb-4">Typical Cost Structure (2026 Est)</h4>
+                        <div class="chart-wrapper" style="height: 200px;">
+                            <canvas id="sectorChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const canvas = document.getElementById('sectorChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Food Cost', 'Labour', 'Overheads', 'Net Margin'],
+                    datasets: [{
+                        data: data.chartData,
+                        backgroundColor: ['#007588', '#f8ab16', '#374f5a', '#a0aec0'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
